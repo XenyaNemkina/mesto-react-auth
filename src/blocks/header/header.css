@@ -2,10 +2,9 @@
   max-width: 880px;
   width: calc(100% - 200px * 2);
   margin: 0 auto 0;
-  padding-top: 45px;
-  padding-bottom: 41px;
+  padding: 45px 0 41px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   border-bottom: 1px solid #545454;
 }
 
@@ -13,7 +12,7 @@
   .header {
     max-width: 320px;
     width: 100%;
-    margin: 28px auto 0;
-    padding-bottom: 31px;
+    margin: 0 auto 0;
+    padding: 28px 0 31px;
   }
 }

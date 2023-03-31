@@ -12,6 +12,6 @@
 
 @media screen and (max-width: 590px) {
   .popup__error_active {
-    margin: 5px 22px 0px;
+    margin: 5px 0px 0px;
   }
 }
