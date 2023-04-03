@@ -1,25 +1,18 @@
 import React, { useContext } from "react";
 import Card from "./Card.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import Header from "./Header.js";
 
-function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete }) {
+function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete, email, onLogout }) {
   const currentUser = useContext(CurrentUserContext);
 
   return (
-    <main className="content">
-      <section className="auth">
-        <div className="auth__container">
-          <h2 className="auth__title">Регистрация</h2>
-          <form className="auth__form">
-            <input className="popup__field auth__field" type="email" name="email" placeholder="Email" minLength="2" autoComplete="off" required />
-            <span className="popup__error popup__error_active"></span>
-            <input className="popup__field auth__field" type="password" name="password" placeholder="Пароль" minLength="2" autoComplete="off" required />
-            <span className="popup__error popup__error_active"></span>
-            <button type="submit" className="popup__save popup__save_auth-button">Зарегистрироваться</button>
-            <p className="auth__text">Уже зарегистрированы? <a className="auth__text sign-up__link">Войти</a></p>
-          </form> 
-          </div>
-        </section>
+    <>
+    <Header isWrappable={true}>
+      <p className="">{email}</p>
+      <button href="#" className="" onClick={onLogout}>Выйти</button>
+    </Header>
+    <main className="content">    
       <section className="profile">
         <button className="profile__avatarbtn" type="button" onClick={onEditAvatar}></button>
         <img className="profile__avatar" src={currentUser.avatar} alt="фото профиля" />
@@ -40,6 +33,7 @@ function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onC
         </ul>
       </section>
     </main>
+    </>
   );
 }
 

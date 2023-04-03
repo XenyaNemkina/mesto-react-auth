@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "./Header.js";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import Main from "./Main.js";
 import Footer from "./Footer.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
@@ -7,7 +7,12 @@ import AddPlacePopup from "./AddPlacePopup.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import ImagePopup from "./ImagePopup.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
-import api from "../../src/utils/api.js";
+import api from "../utils/api.js";
+import auth from "../utils/auth.js"
+import ProtectedRoute from "./ProtectedRoute.js";
+import Register from "./Register.js";
+import Login from "./Login.js";
+import InfoToolTip from "./InfoToolTip.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -19,6 +24,10 @@ function App() {
   const [isEditAvatarPopupOnLoading, setEditAvatarPopupButtonText] = useState(false);
   const [isEditProfilePopupOnLoading, setEditProfilePopupButtonText] = useState(false);
   const [isAddPlacePopupOnLoading, setAddPlacePopupButtonText] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [infoMessage, setInfoMessage] = React.useState(null)
+  const navigate = useNavigate();
 
   const handleEditProfileClick = () => {
     setIsEditProfilePopupOpen(true);
@@ -131,15 +140,54 @@ function App() {
       });
   }
 
+  React.useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      auth
+        .checkToken(jwt)
+        .then((res) => {
+          setEmail(res.data.email);
+          setIsLoggedIn(true);
+          navigate("/");
+        })
+        .catch((err) => {
+          console.log(err);})
+    }
+  }, [navigate]);
+
+  function handleLogin() {
+    setIsLoggedIn(true)
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+  }
+
+  function handleShowInfoMessage(message) {
+    setInfoMessage(message)
+  }
+
   return (
     <div style={{ backgroundColor: "black", minHeight: "100vh" }}>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-        <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
+          <Routes>
+            <Route path="/" 
+              element={ <ProtectedRoute isLoggiedIn={isLoggedIn}>
+                <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} email={email} onLogout={handleLogout} />
+            </ProtectedRoute>} />
+            <Route path="/sign-up" 
+              element={<Register handleShowInfoMessage={handleShowInfoMessage} />} />
+            <Route path="/sign-in" 
+              element={<Login handleShowInfoMessage={handleShowInfoMessage} onLogin={handleLogin} />} />
+            <Route path="*"
+              element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />} />
+            </Routes>
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} onLoading={isEditProfilePopupOnLoading} />
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} onLoading={isAddPlacePopupOnLoading} />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} onLoading={isEditAvatarPopupOnLoading} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <InfoToolTip message={infoMessage} onClose={closeAllPopups} />
         <Footer />
       </CurrentUserContext.Provider>
     </div>
