@@ -4,7 +4,6 @@ import Header from "./Header.js";
 import auth from "../utils/auth.js";
 
 
-
 function Register({handleShowInfoMessage}) {
   const values = {email: "", password: ""}
   const navigate = useNavigate();
@@ -43,9 +42,7 @@ function resetForm() {
 
 return (
   <>
-    <Header>
-      <Link to="/sign-in" className="">Войти</Link>
-    </Header>
+    <Header><Link to="/sign-up" className="header__link">Регистрация</Link></Header>
     <main className="content">
       <section className="auth">
         <div className="auth__container">

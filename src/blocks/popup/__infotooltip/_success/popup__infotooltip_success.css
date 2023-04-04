@@ -1,0 +1,7 @@
+.popup__infotooltip_success {
+  width: 120px;
+  height: 120px;
+  background-image: url("../../../../images/round_success.png");
+  background-repeat: no-repeat;
+  position: absolute;
+}

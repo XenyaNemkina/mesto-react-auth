@@ -8,10 +8,7 @@ function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onC
 
   return (
     <>
-    <Header isWrappable={true}>
-      <p className="">{email}</p>
-      <button href="#" className="" onClick={onLogout}>Выйти</button>
-    </Header>
+    <Header email={email} onClick={onLogout}></Header>
     <main className="content">    
       <section className="profile">
         <button className="profile__avatarbtn" type="button" onClick={onEditAvatar}></button>

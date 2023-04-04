@@ -41,9 +41,7 @@ function resetForm() {
 
 return(
   <>
-    <Header>
-      <Link to="/sign-up" className="">Регистрация</Link>
-    </Header>
+  <Header><Link to="/sign-in" className="header__link">Войти</Link></Header>
     <main className="content">
       <section className="auth">
         <div className="auth__container">

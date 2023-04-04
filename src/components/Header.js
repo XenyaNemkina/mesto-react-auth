@@ -1,23 +1,12 @@
 import React from "react";
 import logo from "../images/logo.svg";
+import NavBar from "./NavBar.js";
 
-function Header({children, isWrappable}) {
-  const [isMenuOpened, setIsMenuOpened] = React.useState(false);
-
-  function handleOpenMenu() {
-    setIsMenuOpened((state) => !state);
-  }
-
-
+function Header({email, onLogout}) {
   return (
-    <header className={"header" + (isWrappable ? "header__loggined" : "" )}>
+    <header className="header">
       <img className="header__logo" src={logo} alt="лого Место" />
-      
-      {children && (
-      <div className={"header__nav" + (isMenuOpened ? "header__menu_opened" : "")}>
-        <p className="header__profile-email">Email@mail.ru</p>
-        <a className="header__link">Войти</a>
-      </div>)}
+      <NavBar email={email} onLogout={onLogout} />
     </header>
   );
 }

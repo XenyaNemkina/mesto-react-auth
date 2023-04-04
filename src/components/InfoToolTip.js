@@ -1,9 +1,15 @@
-function InfoToolTip({message, onClose}) {
+import PopupWithForm from "./PopupWithForm";
+
+function InfoToolTip({message, isOpen, onClose}) {
   return (
-    <div className="popup__container popup__infotooltip">
-      <p className={"popup__infotooltip" + (message ? message.isSuccess ? "popup__infotooltip_success" : "popup__infotooltip_fail" : "")}>{message ? message.text : ""}</p>
-      <button className="popup__close" type="button" onClick={onClose}></button>
-    </div>
+    <PopupWithForm
+      isOpen={isOpen}
+      onClose={onClose}>
+      <div className="popup__container">
+       <div className={"popup__infotooltip" + (message ? message.isSuccess ? "popup__infotooltip_success" : "popup__infotooltip_fail" : "")}></div>
+        <p className="popup__infotooltip_message">(message ? message.text : "")</p>
+      </div>
+    </PopupWithForm>
   )
 } 
 
