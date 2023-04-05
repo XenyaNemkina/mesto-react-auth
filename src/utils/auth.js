@@ -10,10 +10,12 @@ class Auth {
         return res.json();
     }
 
-    register({email, password}) {
+    register(email, password) {
       return fetch(`${this._baseUrl}/signup`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"},
         body: JSON.stringify({
           email,
           password
@@ -25,7 +27,9 @@ class Auth {
     authorization({email, password}) {
       return fetch(`${this._baseUrl}/signin`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"},
         body: JSON.stringify({
           email,
           password
@@ -38,6 +42,7 @@ class Auth {
       return fetch(`${this._baseUrl}/users/me`, {
         method: "GET",
         headers: {
+          "Accept": "application/json",
           "Authorization": `Bearer ${jwt}`,
           "Content-Type": "application/json",
             },
@@ -46,7 +51,7 @@ class Auth {
     }}
 
 const auth = new Auth({
-  baseUrl: "https://mesto.nomoreparties.co",
+  baseUrl: "https://auth.nomoreparties.co",
   });
 
 

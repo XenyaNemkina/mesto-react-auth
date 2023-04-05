@@ -141,6 +141,17 @@ function App() {
       });
   }
 
+  function onRegister(email, password) {
+    auth.register(email, password)
+    .then((res) => {
+      console.log(res)
+      navigate('/sign-in', {replace: true})
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
   React.useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     console.log(jwt);
@@ -150,7 +161,7 @@ function App() {
         .then((res) => {
           setEmail(res.data.email);
           setIsLoggedIn(true);
-          navigate("/");
+          navigate("/", {replace: true});
         })
         .catch((err) => {
           console.log(err);})
@@ -178,14 +189,15 @@ function App() {
             element={ <ProtectedRoute isLoggiedIn={isLoggedIn}>
               <Header title="Выйти" email={email} />
               <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} email={email} onLogout={handleLogout} />
+              <Footer />
           </ProtectedRoute>} />
-          <Route path="/sign-up" 
-            element={
-              <Register handleShowInfoMessage={handleShowInfoMessage} />
-              } />
           <Route path="/sign-in" 
             element={
              <Login handleShowInfoMessage={handleShowInfoMessage} onLogin={handleLogin} />
+              } />
+          <Route path="/sign-up" 
+            element={
+              <Register onRegister={onRegister} />
               } />
           <Route path="*"
             element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />} />
@@ -195,8 +207,7 @@ function App() {
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} onLoading={isEditAvatarPopupOnLoading} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <InfoToolTip message={infoMessage} onClose={closeAllPopups} />
-        <Footer />
-      </CurrentUserContext.Provider>
+        </CurrentUserContext.Provider>
     </div>
   );
 }
