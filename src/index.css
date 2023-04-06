@@ -11,6 +11,7 @@
 @import url(./blocks/header/__navbar/header__navbar.css);
 @import url(./blocks/header/__profile-email/header__profile-email.css);
 @import url(./blocks/header/__signout/header__signout.css);
+@import url(./blocks/header/__email/header__email.css);
 /* content */
 @import url(./blocks/content/content.css);
 /* profile */

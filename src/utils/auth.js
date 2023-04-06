@@ -10,7 +10,7 @@ class Auth {
         return res.json();
     }
 
-    register(email, password) {
+    register({email, password}) {
       return fetch(`${this._baseUrl}/signup`, {
         method: "POST",
         headers: {
@@ -21,7 +21,14 @@ class Auth {
           password
         }),
       })
-      .then(this._getResponseData);
+     .then((response) => {
+      return response.json()
+     })
+     .then((res) => {
+      return res
+     })
+     .catch((err) => console.log(err))
+
     }
     
     authorization({email, password}) {
@@ -35,23 +42,29 @@ class Auth {
           password
         }),
       })
-      .then(this._getResponseData);
+      .then((response) => response.json())
+      .then((data) => {
+        localStorage.setItem('jwt', data.jwt);
+        return data;
+      })
+      .catch((err) => console.log(err))
       }
     
-    checkToken(jwt) {
+      getContent(token) {
       return fetch(`${this._baseUrl}/users/me`, {
         method: "GET",
         headers: {
           "Accept": "application/json",
-          "Authorization": `Bearer ${jwt}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
             },
       })
-      .then(this._getResponseData);
+      .then(res => res.json())
+      .then(data => data)
     }}
 
 const auth = new Auth({
-  baseUrl: "https://auth.nomoreparties.co",
+  baseUrl: 'https://auth.nomoreparties.co',
   });
 
 

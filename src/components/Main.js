@@ -1,15 +1,13 @@
 import React, { useContext } from "react";
 import Card from "./Card.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import Header from "./Header.js";
 
 function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete, email, onLogout }) {
   const currentUser = useContext(CurrentUserContext);
 
   return (
     <>
-    <Header email={email} onClick={onLogout}></Header>
-    <main className="content">    
+      <main className="content">    
       <section className="profile">
         <button className="profile__avatarbtn" type="button" onClick={onEditAvatar}></button>
         <img className="profile__avatar" src={currentUser.avatar} alt="фото профиля" />

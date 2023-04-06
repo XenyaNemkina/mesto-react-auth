@@ -27,7 +27,7 @@ function App() {
   const [isAddPlacePopupOnLoading, setAddPlacePopupButtonText] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState("");
-  const [infoMessage, setInfoMessage] = React.useState(null)
+  const [infoMessage, setInfoMessage] = React.useState(null);
   const navigate = useNavigate();
 
   const handleEditProfileClick = () => {
@@ -47,6 +47,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setSelectedCard({});
+    setInfoMessage(null);
   };
 
   useEffect(() => {
@@ -141,32 +142,25 @@ function App() {
       });
   }
 
-  function onRegister(email, password) {
-    auth.register(email, password)
-    .then((res) => {
-      console.log(res)
-      navigate('/sign-in', {replace: true})
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  function handleShowInfoMessage(message) {
+    setInfoMessage(message)
   }
 
   React.useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    console.log(jwt);
-    if (jwt) {
-      auth
-        .checkToken(jwt)
+   
+      if (localStorage.getItem('jwt')){
+        const jwt = localStorage.getItem('jwt');
+        auth
+        .getContent(jwt)
         .then((res) => {
-          setEmail(res.data.email);
-          setIsLoggedIn(true);
-          navigate("/", {replace: true});
+          console.log(res);
+          setEmail(res.email);
+          handleLogin();
+          navigate("/", {replace: true})
         })
-        .catch((err) => {
-          console.log(err);})
+        .catch((err) => console.log(err))
     }
-  }, [navigate]);
+  }, [navigate])
 
   function handleLogin() {
     setIsLoggedIn(true)
@@ -177,28 +171,21 @@ function App() {
     setIsLoggedIn(false);
   }
 
-  function handleShowInfoMessage(message) {
-    setInfoMessage(message)
-  }
-
   return (
     <div style={{ backgroundColor: "black", minHeight: "100vh" }}>
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
           <Route path="/" 
             element={ <ProtectedRoute isLoggiedIn={isLoggedIn}>
-              <Header title="Выйти" email={email} />
+              <Header title="Выйти" email={email} onLogout={handleLogout} />
               <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} email={email} onLogout={handleLogout} />
               <Footer />
           </ProtectedRoute>} />
           <Route path="/sign-in" 
             element={
-             <Login handleShowInfoMessage={handleShowInfoMessage} onLogin={handleLogin} />
+             <Login handleLogin={handleLogin} handleShowInfoMessage={handleShowInfoMessage} email={email}/>
               } />
-          <Route path="/sign-up" 
-            element={
-              <Register onRegister={onRegister} />
-              } />
+          <Route path="/sign-up" element={<Register handleShowInfoMessage={handleShowInfoMessage} />} />
           <Route path="*"
             element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />} />
           </Routes>

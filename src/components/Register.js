@@ -4,14 +4,14 @@ import Header from "./Header.js";
 import auth from "../utils/auth.js";
 
 
-function Register(props) {
+const Register = ({handleShowInfoMessage}) => {
   const [formValue, setFormValue] = React.useState({
     email: "",
     password: "",
   })
   const navigate = useNavigate();
 
-  function handleChange(evt) {
+  const handleChange = (evt) => {
     const {name, value} = evt.target;
     setFormValue({
       ...formValue,
@@ -20,11 +20,24 @@ function Register(props) {
   }
 
 
-function handleSubmit(evt) {
+const handleSubmit = (evt) => {
     evt.preventDefault();
-    props.onRegister(formValue.email, formValue.password);
-    }
-
+    auth
+    .register(formValue)
+    .then((res) => {
+      handleShowInfoMessage({
+        text: "Вы успешно зарегистрировались!",
+        isSuccess: true,
+      });
+      navigate('/signin', {replace:true})
+    })
+    .catch((err) => {
+      handleShowInfoMessage({
+        text: err.message || "Что-то пошло не так! Попробуйте еще раз.",
+        isSuccess: false,
+  });
+  })
+}
 
 return (
   <>
@@ -38,7 +51,7 @@ return (
             <span className="popup__error popup__error_active"></span>
             <input className="popup__field auth__field" type="password" name="password" placeholder="Пароль" minLength="2" autoComplete="off" value={formValue.password} onChange={handleChange} required />
             <span className="popup__error popup__error_active"></span>
-            <button type="submit" className="popup__save popup__save_auth-button">Зарегистрироваться</button>
+            <button type="submit" onSubmit={handleSubmit} className="popup__save popup__save_auth-button">Зарегистрироваться</button>
             <p className="auth__text">Уже зарегистрированы? <Link to="/sign-in" className="auth__text_link">Войти</Link></p>
           </form> 
           </div>
