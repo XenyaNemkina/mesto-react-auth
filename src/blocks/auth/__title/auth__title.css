@@ -8,7 +8,7 @@
 }
 
 @media screen and (max-width: 685px) {
-    .auth__title {
+  .auth__title {
       max-width: 260px;
       margin: 0 0 50px;
     }

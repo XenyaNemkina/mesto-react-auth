@@ -8,7 +8,7 @@
 }
 
 @media screen and (max-width: 685px) {
-    .auth__text {
+  .auth__text {
       max-width: 260px;
     }
   }

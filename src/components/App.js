@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useNavigate} from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Header from "./Header.js";
 import Main from "./Main.js";
 import Footer from "./Footer.js";
@@ -9,7 +9,7 @@ import EditProfilePopup from "./EditProfilePopup.js";
 import ImagePopup from "./ImagePopup.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import api from "../utils/api.js";
-import auth from "../utils/auth.js"
+import auth from "../utils/auth.js";
 import ProtectedRoute from "./ProtectedRoute.js";
 import Register from "./Register.js";
 import Login from "./Login.js";
@@ -51,14 +51,15 @@ function App() {
   };
 
   useEffect(() => {
-    isLoggedIn && Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, data]) => {
-        setCurrentUser(userData);
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    isLoggedIn &&
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userData, data]) => {
+          setCurrentUser(userData);
+          setCards(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -143,31 +144,29 @@ function App() {
   }
 
   function handleShowInfoMessage(message) {
-    setInfoMessage(message)
+    setInfoMessage(message);
   }
 
   React.useEffect(() => {
-   
-      if (localStorage.getItem('jwt')){
-        const jwt = localStorage.getItem('jwt');
-        auth
-        .getContent(jwt)
+    const token = localStorage.getItem("token");
+    if (token) {
+      auth
+        .getContent(token)
         .then((res) => {
-          console.log(res);
-          setEmail(res.email);
+          setEmail(res.data.email);
           handleLogin();
-          navigate("/", {replace: true})
+          navigate("/", { replace: true });
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(err));
     }
-  }, [navigate])
+  }, [navigate]);
 
   function handleLogin() {
-    setIsLoggedIn(true)
+    setIsLoggedIn(true);
   }
 
   function handleLogout() {
-    localStorage.removeItem("jwt");
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
   }
 
@@ -175,26 +174,36 @@ function App() {
     <div style={{ backgroundColor: "black", minHeight: "100vh" }}>
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
-          <Route path="/" 
-            element={ <ProtectedRoute isLoggiedIn={isLoggedIn}>
-              <Header title="Выйти" email={email} onLogout={handleLogout} />
-              <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} email={email} onLogout={handleLogout} />
-              <Footer />
-          </ProtectedRoute>} />
-          <Route path="/sign-in" 
+          <Route
+            path="/"
             element={
-             <Login handleLogin={handleLogin} handleShowInfoMessage={handleShowInfoMessage} email={email}/>
-              } />
+              <ProtectedRoute isLoggiedIn={isLoggedIn}>
+                <Header title="Выйти" email={email} onLogout={handleLogout} />
+                <Main
+                  cards={cards}
+                  onEditProfile={handleEditProfileClick}
+                  onAddPlace={handleAddPlaceClick}
+                  onEditAvatar={handleEditAvatarClick}
+                  onCardClick={handleCardClick}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handleCardDelete}
+                  email={email}
+                  onLogout={handleLogout}
+                />
+                <Footer />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/sign-in" element={<Login handleLogin={handleLogin} handleShowInfoMessage={handleShowInfoMessage} email={email} />} />
           <Route path="/sign-up" element={<Register handleShowInfoMessage={handleShowInfoMessage} />} />
-          <Route path="*"
-            element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />} />
-          </Routes>
+          <Route path="*" element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />} />
+        </Routes>
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} onLoading={isEditProfilePopupOnLoading} />
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} onLoading={isAddPlacePopupOnLoading} />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} onLoading={isEditAvatarPopupOnLoading} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <InfoToolTip message={infoMessage} onClose={closeAllPopups} />
-        </CurrentUserContext.Provider>
+      </CurrentUserContext.Provider>
     </div>
   );
 }
